@@ -30,12 +30,9 @@ class MQTTSubscriber:
         return client
 
     def on_connect(self, client, userdata, flags, rc):
-        """
-        Callback po pomyślnym połączeniu.
-        Subskrybuje temat po nawiązaniu połączenia.
-        """
         print(f"Połączono z brokerem z kodem: {rc}")
-        client.subscribe(self.TOPIC)  # Subskrybujemy temat po pomyślnym połączeniu.
+        client.subscribe(self.TOPIC)  # Subskrybujemy temat
+        print(f"Subskrybowano temat: {self.TOPIC}")  # Dodajemy logowanie
 
     def on_message(self, client, userdata, message):
         """
@@ -66,14 +63,9 @@ class MQTTSubscriber:
 
     def start_subscription(self):
         client = self.connect_mqtt()
+        client.on_message = self.on_message
         
         # Rozpoczynamy pętlę klienta w tle, aby nasłuchiwać wiadomości.
-        client.loop_start()
-
-        try:
-            input("Naciśnij Enter, aby zakończyć subskrypcję...\n")  # Program będzie działał w tle, czekając na dane
-        except KeyboardInterrupt:
-            print("Zakończono subskrypcję.")
-        finally:
-            client.disconnect()  # Zakończenie połączenia z brokerem
+        client.loop()
+        client.disconnect()  # Zakończenie połączenia z brokerem
 
