@@ -3,21 +3,23 @@ import os
 
 class MQTTSubscriber:
 
-    def __init__(self):
-        self.broker = os.getenv('BROKER', 'localhost')
-        self.port = int(os.getenv('PORT', 1883))
-        self.user = os.getenv('MQTT_USER', 'user')
-        self.password = os.getenv('MQTT_PASSWORD', 'password')
+    def __init__(self,BROKER_ADDRESS,BROKER_PORT,MQTT_USER,MQTT_PASSWORD,STUDENT_ID,TOPIC):
+        self.BROKER_ADDRESS = BROKER_ADDRESS
+        self.BROKER_PORT = BROKER_PORT
+        self.MQTT_USER = MQTT_USER
+        self.MQTT_PASSWORD = MQTT_PASSWORD
+        self.STUDENT_ID = STUDENT_ID
+        self.TOPIC = TOPIC
 
     def connect_mqtt(self):
         client = mqtt.Client()
-        client.username_pw_set(self.user, self.password)
-        client.connect(self.broker, self.port)
+        client.username_pw_set(self.MQTT_USER, self.MQTT_PASSWORD)
+        client.connect(self.BROKER_ADDRESS, self.BROKER_PORT)
         return client
-
+    
     def on_message(self, client, userdata, message):
         # Przetwarzanie danych i zapis na dysku
-        topic = message.topic
+        topic = message.self.TOPIC
         payload = message.payload.decode('utf-8')
         # Zakładamy, że topic ma format: weather/<miasto>/current
         topic_parts = topic.split('/')

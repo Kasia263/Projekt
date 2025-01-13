@@ -33,7 +33,7 @@ class WeatherRequester:
         return (
             f"Pogoda dla: {location}, {country}\n"
             f"Temperatura: {temperature}°C\n"
-            f"Opis: {description}\n"
-            f"Prędkość wiatru: {wind_speed} km/h\n"
-            f"Wilgotność: {humidity}%"
+#            f"Opis: {description}\n"
+#            f"Prędkość wiatru: {wind_speed} km/h\n"
+#            f"Wilgotność: {humidity}%"
         )
