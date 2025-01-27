@@ -8,7 +8,7 @@ class MQTTSubscriber:
         self.MQTT_PASSWORD = MQTT_PASSWORD
         self.STUDENT_ID = STUDENT_ID
         self.TOPIC = TOPIC
-        self.LOG_FILE = LOG_FILE  # Nazwa pliku logu
+        self.LOG_FILE = LOG_FILE  # Nazwa pliku do zapisu
 
     def connect_mqtt(self):
         client = mqtt.Client()
@@ -31,7 +31,7 @@ class MQTTSubscriber:
         else:
             print(f"Nie udało się subskrybować tematu: {self.TOPIC}")
 
-    def on_message(self, client, userdata, message):
+    def on_message(self, message):
         payload = message.payload.decode('utf-8')
         print(f"Otrzymano wiadomość na temacie: {message.topic}")
         print(f"Payload: {payload}")
