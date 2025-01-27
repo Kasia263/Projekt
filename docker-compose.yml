@@ -1,14 +1,15 @@
-version: "3.8"
+version: "3.9"
 services:
   publisher:
-    build: ./publisher
-    container_name: mqtt_publisher
+    build:
+      context: ./publisher
+    container_name: publisher
   subscriber:
-    build: ./subscriber
-    container_name: mqtt_subscriber
+    build:
+      context: ./subscriber
+    container_name: subscriber
+    volumes:
+      - ./subscriber/mqtt_log.txt:/app/mqtt_log.txt
     ports:
       - "5000:5000"
 
-
-
-      

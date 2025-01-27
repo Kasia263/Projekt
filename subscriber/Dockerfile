@@ -1,20 +1,17 @@
-# Bazowy obraz Pythona
+# Używamy oficjalnego obrazu Pythona
 FROM python:3.9-slim
 
-# Ustawienie katalogu roboczego
+# Ustawienie katalogu roboczego w kontenerze
 WORKDIR /app
 
-# Instalacja niezbędnych narzędzi i bibliotek systemowych
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Skopiowanie plików projektu
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
+# Kopiowanie plików do obrazu
 COPY subscriber.py .
+COPY /templates/index.html .
+COPY MQTTSubscriber.py .
+COPY dane.txt .
 
-# Uruchomienie aplikacji
+# Instalacja wymaganych bibliotek
+RUN pip install paho-mqtt flask
+
+# Uruchomienie programu
 CMD ["python", "subscriber.py"]
