@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pogoda</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <!-- Dynamiczny tekst przekazany z Flask -->
+    <h1 id="dynamic-text">{{ text }}</h1> <!-- {{ text }} to zmienna z Flask -->
+
+    <button onclick="refreshText()">Odśwież</button>
+
+    <script>
+        // Funkcja do odświeżania tekstu
+        function refreshText() {
+            $.get("/get_text", function(data) {
+                $('#dynamic-text').text(data.text);
+            });
+        }
+    </script>
+</body>
+</html>

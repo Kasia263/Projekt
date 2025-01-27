@@ -1,4 +1,4 @@
-import mqtt_publisher as mp
+import publisher.publisher as mp
 import os
 import mqtt_subscriber as ms
 import time

@@ -26,9 +26,9 @@ class WeatherRequester:
         location = data["location"]["name"]
         country = data["location"]["country"]
         temperature = data["current"]["temperature"]
-        description = data["current"]["weather_descriptions"][0]
-        wind_speed = data["current"]["wind_speed"]
-        humidity = data["current"]["humidity"]
+#        description = data["current"]["weather_descriptions"][0]
+#        wind_speed = data["current"]["wind_speed"]
+#        humidity = data["current"]["humidity"]
 
         return (
             f"Pogoda dla: {location}, {country}\n"
