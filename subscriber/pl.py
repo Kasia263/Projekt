@@ -1,12 +1,13 @@
-import threading
 from flask import Flask, render_template, jsonify
+import threading
 import time
+import MQTTSubscriber as mq
 
 app = Flask(__name__)
 
 # Klasa do zarządzania tekstami
 class TextManager:
-    def __init__(self, text):
+    def __init__(self, text="Początkowy tekst"):
         self.text = text
 
     def get_text(self):
@@ -15,36 +16,53 @@ class TextManager:
     def set_text(self, new_text):
         self.text = new_text
 
+# Funkcja do aktualizacji tekstu co 5 sekund, odczytując z pliku
+def text_updater(log_file):
+    while True:
+        time.sleep(5)  # Czeka 5 sekund przed kolejnym odczytem
+        try:
+            # Odczyt ostatniej linii z pliku
+            with open(log_file, "r") as file:
+                lines = file.readlines()
+                if lines:
+                    last_line = lines[-1]  # Ostatnia wiadomość w logu
+                    text_manager.set_text(last_line.strip())  # Zmienia tekst na podstawie ostatniej wiadomości
+        except FileNotFoundError:
+            print(f"Plik logu '{log_file}' nie został znaleziony, tworzymy nowy.")
+            with open(log_file, "w") as file:
+                file.write("Brak danych w logu.\n")  # Tworzymy plik z początkową treścią
+        except Exception as e:
+            print(f"Problem z odczytem pliku: {e}")
+
 # Inicjalizacja obiektu TextManager
-text_manager = TextManager("Początkowy tekst")
+text_manager = TextManager()
 
-# Przykład klasy, która będzie zmieniała tekst co pewien czas (np. z MQTT lub innej logiki)
-class TextUpdater(threading.Thread):
-    def __init__(self, text_manager):
-        threading.Thread.__init__(self)
-        self.text_manager = text_manager
+# Inicjalizacja subskrybenta MQTT
+subscriber = mq.MQTTSubscriber(
+    BROKER_ADDRESS="test.mosquitto.org",
+    BROKER_PORT=1883,
+    MQTT_USER="",
+    MQTT_PASSWORD="",
+    STUDENT_ID="12345",
+    TOPIC="test/mqtt_project/data",
+    LOG_FILE="mqtt_log.txt"  
+)
 
-    def run(self):
-        while True:
-            # Symulacja zmiany tekstu (np. z MQTT)
-            new_text = "Nowy tekst"  # Możesz tutaj dodać kod do odbierania nowych danych
-            self.text_manager.set_text(new_text)
-            time.sleep(5)  # Czeka 5 sekund przed zmianą tekstu
+# Uruchomienie wątku subskrybującego MQTT w tle
+mqtt_thread = threading.Thread(target=subscriber.start_subscription, daemon=True)
+mqtt_thread.start()
 
-# Uruchomienie wątku do aktualizacji tekstu
-text_updater = TextUpdater(text_manager)
-text_updater.start()
+# Uruchomienie wątku do aktualizacji tekstu w tle
+text_thread = threading.Thread(target=text_updater, args=("mqtt_log.txt",), daemon=True)
+text_thread.start()
 
 @app.route('/')
 def home():
-    # Przekazanie aktualnego tekstu do szablonu
     return render_template('index.html', text=text_manager.get_text())
 
 @app.route('/get_text')
 def get_text():
-    # Zwracanie tekstu w formie JSON
-    text = text_manager.get_text()
-    return jsonify({'text': text})
+    return jsonify({'text': text_manager.get_text()})
 
 if __name__ == '__main__':
     app.run(debug=True)

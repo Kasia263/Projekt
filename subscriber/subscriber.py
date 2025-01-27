@@ -7,6 +7,7 @@ if __name__ == "__main__":
         MQTT_USER="",
         MQTT_PASSWORD="",
         STUDENT_ID="12345",
-        TOPIC="test/mqtt_project/data"
+        TOPIC="test/mqtt_project/data",
+        LOG_FILE="mqtt_log.txt"
     )
     subscriber.start_subscription()

@@ -8,17 +8,23 @@
 </head>
 <body>
     <!-- Dynamiczny tekst przekazany z Flask -->
-    <h1 id="dynamic-text">{{ text }}</h1> <!-- {{ text }} to zmienna z Flask -->
+    <h1 id="dynamic-text">{{ text }}</h1>
 
+    <!-- Przycisk do odświeżenia tekstu -->
     <button onclick="refreshText()">Odśwież</button>
 
     <script>
         // Funkcja do odświeżania tekstu
         function refreshText() {
             $.get("/get_text", function(data) {
-                $('#dynamic-text').text(data.text);
+                $('#dynamic-text').text(data.text); // Zaktualizowanie tekstu na stronie
             });
         }
+
+        // Odświeżenie tekstu po załadowaniu strony, aby od razu pokazać aktualny tekst
+        $(document).ready(function() {
+            refreshText();
+        });
     </script>
 </body>
 </html>
