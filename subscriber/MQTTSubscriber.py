@@ -1,7 +1,6 @@
 import paho.mqtt.client as mqtt
 
 class MQTTSubscriber:
-
     def __init__(self, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, MQTT_PASSWORD, STUDENT_ID, TOPIC, LOG_FILE):
         self.BROKER_ADDRESS = BROKER_ADDRESS
         self.BROKER_PORT = BROKER_PORT

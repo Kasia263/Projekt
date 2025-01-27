@@ -1,5 +1,6 @@
 import MqttPublisher as mp
 import os
+import WeatherRequester as w
 
 BROKER_ADDRESS = os.getenv("BROKER_ADDRESS", "167.172.164.168")
 BROKER_PORT = int(os.getenv("BROKER_PORT", 1883))

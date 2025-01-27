@@ -1,39 +1,43 @@
 import requests
+from datetime import datetime
+import pytz
 
 class WeatherRequester:
-
-    def __init__(self, city):
-        self.city = city
-        self.API_KEY = "ae4554e4be09aaf8a7553cb4ac94b8f9"
-        self.BASE_URL = "http://api.weatherstack.com/current"
-
-    def fetch_weather(self):
-        params = {
-            "access_key": self.API_KEY,
-            "query": self.city
+    def __init__(self, lokalizacja):
+        self.lokalizacja = lokalizacja
+        self.api_url = "https://api.openaq.org/v2/locations/10890"
+        self.headers = {
+            "X-API-Key": "613ddb223dcfb9d0cb517f7e60de09080939dc8a3d13eec0e7ff3d726dcd9873"
         }
-        response = requests.get(self.BASE_URL, params=params)
+
+    def send_data(self):
+
+        # Wysyłanie żądania GET do API z nagłówkami
+        response = requests.get(self.api_url, headers=self.headers)
+
+        # Sprawdzanie kodu odpowiedzi
         if response.status_code == 200:
             data = response.json()
-            if "error" in data:
-                return f"Błąd: {data['error']['info']}"
-            else:
-                return self.format_weather(data)
-        else:
-            return "Nie udało się połączyć z API."
-    
-    def format_weather(self,data):
-        location = data["location"]["name"]
-        country = data["location"]["country"]
-        temperature = data["current"]["temperature"]
-#        description = data["current"]["weather_descriptions"][0]
-#        wind_speed = data["current"]["wind_speed"]
-#        humidity = data["current"]["humidity"]
 
-        return (
-            f"Pogoda dla: {location}, {country}\n"
-            f"Temperatura: {temperature}°C\n"
-#            f"Opis: {description}\n"
-#            f"Prędkość wiatru: {wind_speed} km/h\n"
-#            f"Wilgotność: {humidity}%"
-        )
+        # Pobieranie ostatniej aktualizacji lokalizacji (lastUpdated z results)
+            last_updated = data["results"][0]["lastUpdated"]
+
+            # Pobieranie aktualnego czasu systemowego w strefie czasowej Polski
+            system_timestamp = datetime.now(pytz.utc).astimezone(pytz.timezone("Europe/Warsaw")).isoformat()
+
+            # Tworzymy sformatowaną wiadomość
+            msg = {
+                "location": self.lokalizacja,
+                "timestamp": system_timestamp, # Używamy aktualnego czasu systemowego w polskiej strefie czasowej
+                "lastUpdated_from_api": last_updated, # Zachowujemy lastUpdated z API
+                "values": [
+                    # Tworzymy listę wartości pomiarów, gdzie dla każdego parametru w 'parameters' dodajemy parametry
+                    {
+                        param["parameter"]: param["lastValue"]
+                    }
+                    for param in data["results"][0]["parameters"]
+                ]
+            }
+            return msg
+
+                    

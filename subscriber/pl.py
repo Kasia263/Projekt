@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify
 import threading
 import time
 import MQTTSubscriber as mq
+import os
 
 app = Flask(__name__)
 
@@ -39,12 +40,12 @@ text_manager = TextManager()
 
 # Inicjalizacja subskrybenta MQTT
 subscriber = mq.MQTTSubscriber(
-    BROKER_ADDRESS="test.mosquitto.org",
-    BROKER_PORT=1883,
-    MQTT_USER="",
-    MQTT_PASSWORD="",
-    STUDENT_ID="12345",
-    TOPIC="test/mqtt_project/data",
+    BROKER_ADDRESS=os.getenv("BROKER_ADDRESS", "167.172.164.168"),
+    BROKER_PORT=int(os.getenv("BROKER_PORT", 1883)),
+    MQTT_USER=os.getenv("MQTT_USER", "student"),
+    MQTT_PASSWORD=os.getenv("MQTT_PASSWORD", "sys-wbud"),
+    STUDENT_ID=os.getenv("STUDENT_ID", "261334"),
+    TOPIC=f"{os.getenv('STUDENT_ID', '261334')}/Tokyo",
     LOG_FILE="mqtt_log.txt"  
 )
 
