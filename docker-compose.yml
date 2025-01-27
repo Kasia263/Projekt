@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  publisher:
+    build: ./publisher
+    container_name: mqtt_publisher
+  subscriber:
+    build: ./subscriber
+    container_name: mqtt_subscriber
+    ports:
+      - "5000:5000"
