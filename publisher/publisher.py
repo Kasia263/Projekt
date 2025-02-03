@@ -1,15 +1,21 @@
 import MqttPublisher as mp
 import os
-import WeatherRequester as w
+from dotenv import load_dotenv
 
-BROKER_ADDRESS = os.getenv("BROKER_ADDRESS", "167.172.164.168")
-BROKER_PORT = int(os.getenv("BROKER_PORT", 1883))
-MQTT_USER = os.getenv("MQTT_USER", "student")
-MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "sys-wbud")
-STUDENT_ID = os.getenv("STUDENT_ID", "261334")
-city = "Tokyo"
-TOPIC = f"{STUDENT_ID}/{city}"
+load_dotenv(dotenv_path="dane.env")
+BROKER_ADDRESS = os.getenv('BROKER_ADDRESS')
+BROKER_PORT = int(os.getenv('BROKER_PORT'))
+MQTT_USER = os.getenv('MQTT_USER')
+MQTT_PASSWORD = os.getenv('MQTT_PASSWORD')
+STUDENT_ID = os.getenv('STUDENT_ID')
+CITY = os.getenv('CITY')
+TOPIC = f"{STUDENT_ID}/{CITY}"
+OPENAQ_API_KEY = os.getenv('OPENAQ_API_KEY')
+
+if not all([BROKER_ADDRESS, BROKER_PORT, MQTT_USER, MQTT_PASSWORD,STUDENT_ID,CITY,OPENAQ_API_KEY]):
+    print("Error: Missing one or more environment variables.")
+    exit(1)
 
 if __name__ == "__main__":
-    mqtt = mp.MqttPublisher(city, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, MQTT_PASSWORD, STUDENT_ID, TOPIC)
+    mqtt = mp.MqttPublisher(CITY, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, MQTT_PASSWORD, STUDENT_ID, TOPIC,OPENAQ_API_KEY)
     mqtt.start_publishing()

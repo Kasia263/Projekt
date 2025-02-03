@@ -4,8 +4,8 @@ import json
 import WeatherRequester as w
 
 class MqttPublisher:
-    def __init__(self, city, broker, port, user, password, student_id, topic):
-        self.WeatherRequester = w.WeatherRequester(city)
+    def __init__(self, city, broker, port, user, password, student_id, topic,api_key):
+        self.WeatherRequester = w.WeatherRequester(city,api_key)
         self.broker = broker
         self.port = port
         self.user = user

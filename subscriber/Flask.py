@@ -9,7 +9,7 @@ def load_json_files(directory):
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith('.json'):
-                file_path = os.path.join(root, file)
+                file_path = os.path.join("/dane", file)
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = json.load(f)
@@ -21,6 +21,7 @@ def load_json_files(directory):
     return data
 
 @app.route('/')
+
 def index():
     json_data = load_json_files(os.path.dirname(os.path.abspath(__file__)))
     return render_template_string('''
