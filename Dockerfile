@@ -20,4 +20,5 @@ RUN mkdir -p /app/dane && chmod 755 /app/dane
 
 # Ustawiamy komendę, która uruchomi oba pliki: MQTTSubscriber.py i Flask.py
 # Opcja z uruchomieniem MQTTSubscriber w tle, aby kontener nie zakończył działania
-CMD python MQTTSubscriber.py & tail -f /dev/null
+
+CMD ["python", "MQTTSubscriber.py"]

@@ -3,6 +3,7 @@ import json
 import paho.mqtt.client as mqtt
 from datetime import datetime
 from dotenv import load_dotenv
+import subprocess
 
 class MQTTSubscriber:
     def __init__(self):
@@ -73,5 +74,6 @@ class MQTTSubscriber:
 
 # Inicjowanie i uruchamianie subskrybenta
 if __name__ == "__main__":
+    subprocess.Popen(["python", "Flaskjs.py"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     subscriber = MQTTSubscriber()
     subscriber.start()
