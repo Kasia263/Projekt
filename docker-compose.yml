@@ -1,15 +1,37 @@
-version: "3.9"
+version: '3.8'
 services:
-  publisher:
+  mqtt_publisher:
     build:
-      context: ./publisher
-    container_name: publisher
-  subscriber:
-    build:
-      context: ./subscriber
-    container_name: subscriber
-    volumes:
-      - ./subscriber/mqtt_log.txt:/app/mqtt_log.txt
+      context: .  # Katalog główny projektu jako kontekst budowania
+      dockerfile: publisher/Dockerfile  # Wskazujemy plik Dockerfile w folderze 'publisher'
+    container_name: mqtt_publisher_container
+    env_file:
+      - .env  # Wskazujemy plik .env
     ports:
-      - "5000:5000"
+      - "1883:1883"  # Port MQTT
+    volumes:
+      - .:/app  # Montujemy katalog roboczy projektu do kontenera
+    working_dir: /app/publisher  # Ustawiamy folder roboczy na 'publisher'
+    command: python publisher.py  # Uruchamiamy główny skrypt
+    networks:
+      - app_network
 
+  mqtt_subscriber:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Dockerfile w głównym katalogu
+    container_name: mqtt_subscriber_container
+    env_file:
+      - .env
+    ports:
+      - "5000:5000"  # Port Flask
+    volumes:
+      - .:/app
+      - ./dane:/app/dane  # Mapowanie lokalnego folderu dane na kontenerze
+    working_dir: /app
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

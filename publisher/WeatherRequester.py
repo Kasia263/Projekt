@@ -34,7 +34,7 @@ class WeatherRequester:
                 self.measurements = measurements_data["results"][0]
 
 
-                # Pobieranie aktualnego czasu systemowego w strefie czasowej Polski
+            # Pobieranie aktualnego czasu systemowego w strefie czasowej Polski
             system_timestamp = datetime.now(pytz.utc).astimezone(pytz.timezone("Europe/Warsaw")).isoformat()
             # Tworzymy sformatowaną wiadomość
             msg = {

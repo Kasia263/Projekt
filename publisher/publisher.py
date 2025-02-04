@@ -2,7 +2,7 @@ import MqttPublisher as mp
 import os
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="dane.env")
+load_dotenv()
 BROKER_ADDRESS = os.getenv('BROKER_ADDRESS')
 BROKER_PORT = int(os.getenv('BROKER_PORT'))
 MQTT_USER = os.getenv('MQTT_USER')
